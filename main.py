@@ -144,7 +144,7 @@ def main():
                 probabilities = current_network.use(data)
                 accy = accuracy(probabilities, labels)
                 print(f"Precision actual: {accy * 100:.2f}%")
-                num = get_int("¿Cuantos errores mostrar? (max recomendado 10): ")
+                num = get_range("¿Cuantos errores mostrar? (max recomendado 10): ",1,10)
                 show_error(images_2d, labels, probabilities, num_errors=num)
 
         elif opcion == 8:
