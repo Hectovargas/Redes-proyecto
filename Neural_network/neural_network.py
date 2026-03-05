@@ -7,6 +7,7 @@ from Neural_network.dense_layer import DenseLayer
 
 
 class Neural_network:
+
     def __init__(self, input_shape, neurons_list: list, act_func_list: list, targets=None):
         self.targets = targets
         self.input_shape = input_shape 
@@ -22,6 +23,7 @@ class Neural_network:
             else:
                 self.functions.append(softmax())
             inputs = neurons_list[i]
+
         
     def use(self, batch):
         output = batch
@@ -29,13 +31,14 @@ class Neural_network:
             output = f.forward(l.forward(output))
         return output
 
+
     def to_dict(self):
         layers_data = []
         for ly, fn in zip(self.layers, self.functions):
             fn_act = "relu" if isinstance(fn, Activation_Relu) else "softmax"
             layers_data.append({
                 "type": "dense",
-                "units": ly.biases.shape[1], 
+                "units": ly.weight.shape[1], 
                 "activation": fn_act,
                 "W": ly.weight.tolist(),
                 "b": ly.biases.tolist()
@@ -45,6 +48,7 @@ class Neural_network:
             "preprocess": {"scale": 255.0},
             "layers": layers_data
         }
+        
 
     @classmethod 
     def from_dict(cls, data:dict):

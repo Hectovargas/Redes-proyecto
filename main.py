@@ -1,22 +1,18 @@
 import numpy as np
-import json
+from utils import (
+    get_int,
+    get_range,
+    select_file,
+    load_neural_network,
+    save_neural_network
+)
 import os
-from tkinter import filedialog, Tk
-from Neural_network.metrics import show_error
+from Neural_network.metrics import show_error, accuracy
 from Neural_network.neural_network import Neural_network
-from Neural_network.metrics import accuracy
 
 current_network = None
 data, labels, input_shape = None, None, None
 images_2d = None  
-
-
-def select_file(title="Seleccionar archivo", filetypes=(("Todos", "*.*"),)):
-    root = Tk()
-    root.withdraw()
-    path = filedialog.askopenfilename(title=title, filetypes=filetypes)
-    root.destroy()
-    return path
 
 
 def configuration():
@@ -50,38 +46,6 @@ def configuration():
         return None, None, None, None
 
 
-def load_neural_network(file: str):
-    try:
-        with open(file, "r") as f:
-            model_data = json.load(f)
-        nn = Neural_network.from_dict(model_data)
-        print("Red neuronal cargada exitosamente.")
-        return nn
-    except Exception as e:
-        print(f"Error al cargar: {e}")
-        return None
-
-
-def save_neural_network(nn, file: str):
-    try:
-        with open(file, "w") as f:
-            json.dump(nn.to_dict(), f, indent=4)
-        print(f"Red neuronal guardada en {file}.")
-    except Exception as e:
-        print(f"Error al guardar: {e}")
-
-
-def get_int(peticion, min_val=1):
-    while True:
-        try:
-            val = int(input(peticion))
-            if val >= min_val:
-                return val
-            print(f"Debe ser al menos {min_val}.")
-        except ValueError:
-            print("Ingresa un numero entero valido.")
-
-
 def create_network():
     global input_shape, labels
     if input_shape is None:
@@ -105,7 +69,7 @@ def create_network():
             n = get_int("Cantidad de neuronas: ", min_val=1)
             neurons_list.append(n)
             print("Activacion: 1. ReLU")
-            get_int("Opcion: ", min_val=1)   
+            get_range("Opcion: ", min_val=1,max_val=1)   
             act_func_list.append("relu")
 
     nn = Neural_network(input_shape, neurons_list, act_func_list, labels)
@@ -130,7 +94,7 @@ def main():
         print("7. Ver errores de prediccion")
         print("8. Salir")
 
-        opcion = get_int("Seleccione: ")
+        opcion = get_range("Seleccione: ",1,8)
 
         if opcion == 1:
             data, labels, input_shape, images_2d = configuration()
